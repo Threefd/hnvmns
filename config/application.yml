@@ -1,0 +1,57 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: sample
+  datasource:
+    name: sample
+    url: jdbc:postgresql://192.168.0.142:5432/hnvmns-base-data
+    username: postgres
+    password: Admin12345
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: org.postgresql.Driver
+    druid: 
+      filters: stat
+      maxActive: 20
+      initialSize: 5
+      maxWait: 60000
+      minIdle: 5
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: select 'x'
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: true
+      maxOpenPreparedStatements: 20         
+mybatis:
+  mapper-locations: 
+    - /com/hngd/mapping/*.xml
+  type-aliases-package: com.hngd.model 
+eureka: 
+  client: 
+    healthcheck:
+      enabled: true
+    service-url:
+      defaultZone: http://192.168.0.144:12331/eureka/,http://192.168.0.144:12332/eureka/
+  instance:
+    hostname: 192.168.0.239
+    #prefer-ip-address: true,如果是单网卡一个IP,这种方式也可以,入股存在多个IP地址,还是采用hostname配置
+logging: 
+  config: ./config/log4j2.xml
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+hnvmns: 
+  web: 
+    pagehelper: 
+      enable: true
+operation:
+  log: 
+    systemName: sample
+    handlerThreadCount: 2
+
+   
+        

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+
+	<context id="DB2Tables" targetRuntime="MyBatis3">
+		<property name="javaFileEncoding" value="UTF-8" />
+		<!--配置和这个插件是为了,多次运行代码生成后,xml会被覆盖,而不是merge-->
+        <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin" />
+		<commentGenerator
+			type="com.hngd.tool.mge.MyCommentGenerator">
+			<property name="suppressAllComments" value="false" />
+			<property name="addRemarkComments" value="true" />
+			<property name="suppressDate" value="true" />
+		</commentGenerator>
+		<!-- oracle URL、username、password -->
+		<jdbcConnection driverClass="org.postgresql.Driver"
+			connectionURL="jdbc:postgresql://192.168.0.142:5432/hnvmns-base-data"
+			userId="postgres" password="Admin12345">
+		</jdbcConnection>
+		<javaTypeResolver>
+			<property name="forceBigDecimals" value="false" />
+		</javaTypeResolver>
+		<!-- model package and location -->
+		<javaModelGenerator targetPackage="com.hngd.model"
+			targetProject="MAVEN">
+			<property name="enableSubPackages" value="true" />
+			<property name="trimStrings" value="true" />
+			<property name="javaFileEncoding" value="UTF-8" />
+		</javaModelGenerator>
+		<!-- mapping package and location -->
+		<sqlMapGenerator targetPackage="com.hngd.mapping"
+			targetProject="MAVEN">
+			<property name="enableSubPackages" value="true" />
+			<property name="javaFileEncoding" value="UTF-8" />
+		</sqlMapGenerator>
+		<!-- dao package and location -->
+		<javaClientGenerator type="XMLMAPPER"
+			targetPackage="com.hngd.dao" targetProject="MAVEN">
+			<property name="enableSubPackages" value="true" />
+			<property name="javaFileEncoding" value="UTF-8" />
+		</javaClientGenerator>
+		<!-- table name, change tableName and domainObjectName -->
+		<table tableName="tb_role" domainObjectName="Role"
+			enableCountByExample="true" enableSelectByExample="true"
+			selectByExampleQueryId="true" />
+
+	</context>
+</generatorConfiguration>

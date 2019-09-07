@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.hngd.vmns</groupId>
+	<artifactId>hnvmns-java-sample</artifactId>
+	<version>0.0.1</version>
+	<packaging>jar</packaging>
+
+	<name>hnvmns-java-sample</name>
+	<description>java sample project for hnvmns</description>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.0.4.RELEASE</version>
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+		<spring-cloud.version>Finchley.RELEASE</spring-cloud.version>
+		<docker.image.prefix>hnvmns</docker.image.prefix>
+		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis.spring.boot</groupId>
+			<artifactId>mybatis-spring-boot-starter</artifactId>
+			<version>2.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-log4j2</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid-spring-boot-starter</artifactId>
+			<version>1.1.18</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.hngd.vmns</groupId>
+			<artifactId>operation-log-spring-boot-starter</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.hngd.vmns</groupId>
+			<artifactId>hnvmns-web-spring-boot-starter</artifactId>
+			<version>0.0.3-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+	<pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<compilerVersion>1.8</compilerVersion>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<!-- swagger文档，js代码生成插件 -->
+			<plugin>
+				<groupId>com.hngd.tool</groupId>
+				<artifactId>codegen-maven-plugin</artifactId>
+				<version>0.0.9-SNAPSHOT</version>
+				<configuration>
+					<!-- 模块根请求路径,如果是请求是从网关转发到此模块,则需要配置为'/'+模块名称,本机测试配置为'/' -->
+					<serviceUrl>/sample</serviceUrl>
+					<!-- 配置生成js 客户端代码的类型,目前支持ajax与axios -->
+					<type>axios</type>
+					<!-- <outputDirectory>${project.basedir}/src/main/resources/static/js</outputDirectory> -->
+					<!-- 配置接口类所在包名称 -->
+					<packageFilter>com.hngd.web.controller</packageFilter>
+					<!-- 配置生成Java客户端代码的包名 -->
+					<apiPackage>com.hngd.web.api</apiPackage>
+					<!-- 配置生成java客户端代码的同步or异步调用,支持async,sync -->
+					<invokeType>async</invokeType>
+					<!-- 配置生成Swagger文档的基础信息配置文件所在位置 -->
+					<confFilePath>${project.basedir}/build-config/swagger-config.json</confFilePath>
+                    <!--Swagger UI 服务地址,配置后接口文档将自动上传到该服务-->
+                    <swaggerUIServer>192.168.0.140:8888</swaggerUIServer>
+				</configuration>
+			</plugin>
+			<!-- windows下应用程序打包依赖此插件的依赖包复制功能 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<configuration>
+					<outputDirectory>${project.build.directory}/libs</outputDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- windows下应用程序打包 -->
+			<plugin>
+				<groupId>com.hngd.tool</groupId>
+				<artifactId>winpackage-maven-plugin</artifactId>
+				<version>0.0.4-SNAPSHOT</version>
+				<configuration>
+					<scriptConfigFile>${basedir}/package-config/package.properties</scriptConfigFile>
+					<outputDirectory>${project.build.directory}/hnvmns-java-sample</outputDirectory>
+					<dependencyDirectory>${project.build.directory}/libs</dependencyDirectory>
+					<configAndDataDirectories>
+						<param>${basedir}/config</param>
+					</configAndDataDirectories>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>win-package</goal>
+						</goals>
+						<phase>package</phase>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.mybatis.generator</groupId>
+				<artifactId>mybatis-generator-maven-plugin</artifactId>
+				<version>1.3.7</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.postgresql</groupId>
+						<artifactId>postgresql</artifactId>
+						<version>42.2.5</version>
+					</dependency>
+					<dependency>
+						<groupId>com.hngd.tool</groupId>
+						<artifactId>mybatis-generator-ext</artifactId>
+						<version>0.0.2-SNAPSHOT</version>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<overwrite>true</overwrite>
+				</configuration>
+				<executions>
+					<execution>
+						<id>generate</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<phase>generate-sources</phase>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>1.3.0</version>
+				<configuration>
+					<to>
+						<image>192.168.0.140:8082/${docker.image.prefix}/${project.artifactId}</image>
+						<auth>
+							<username>deployer</username>
+							<password>hngd5618</password>
+						</auth>
+						<tags>
+							<tag>${maven.build.timestamp}</tag>
+							<tag>${project.version}</tag>
+						</tags>
+					</to>
+					<from>
+						<image>192.168.0.140:8084/anapsix/alpine-java:8u192b12_server-jre</image>
+						<auth>
+							<username>deployer</username>
+							<password>hngd5618</password>
+						</auth>
+					</from>
+					<container>
+					    <!-- 如果工程中有多个入口类,则需要指定此配置项 -->
+					    <mainClass>com.hngd.vmns.sample.HnvmnsJavaSampleApplication</mainClass>
+					</container>
+					<allowInsecureRegistries>true</allowInsecureRegistries>
+				</configuration>
+			</plugin>
+			<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>0.8.4</version>
+					<executions>
+						<execution>
+							<id>jacoco-initialize</id>
+							<goals>
+								<goal>prepare-agent</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>jacoco-site</id>
+							<phase>test</phase>
+							<goals>
+								<goal>report</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+		</plugins>
+	</pluginManagement>
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
+
+	<!-- <repositories>
+		<repository>
+			<id>hnlocal</id>
+			<name>hnlocal maven</name>
+			<url>http://192.168.0.143:8082/nexus/content/groups/public/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>hnlocal</id>
+			<name>hnlocal maven</name>
+			<url>http://192.168.0.143:8082/nexus/content/groups/public/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</pluginRepository>
+	</pluginRepositories> -->
+</project>
